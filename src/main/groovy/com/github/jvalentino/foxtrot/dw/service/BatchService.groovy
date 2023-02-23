@@ -6,6 +6,7 @@ import com.github.jvalentino.foxtrot.dw.util.DateGenerator
 import groovy.transform.CompileDynamic
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 
@@ -25,8 +26,15 @@ class BatchService {
     @Autowired
     UserService userService
 
+    @Value('${scheduling.enabled}')
+    boolean schedulingEnabled
+
     @Scheduled(fixedRate = 60000L)
     void scheduled() {
+        if (!schedulingEnabled) {
+            log.info('SCHEDULING DISABLED')
+            return
+        }
         log.info('RUNNING ON SCHEDULE')
 
         Date startDate = DateGenerator.date()

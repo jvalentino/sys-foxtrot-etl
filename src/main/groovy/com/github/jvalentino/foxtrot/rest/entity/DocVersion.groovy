@@ -7,7 +7,6 @@ import javax.persistence.CascadeType
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.FetchType
-import javax.persistence.GeneratedValue
 import javax.persistence.Id
 import javax.persistence.JoinColumn
 import javax.persistence.Lob
@@ -24,7 +23,7 @@ import java.sql.Timestamp
 @Table(name = 'doc_version')
 class DocVersion {
 
-    @Id @GeneratedValue
+    @Id
     @Column(name = 'doc_version_id')
     Long docVersionId
 

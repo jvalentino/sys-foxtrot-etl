@@ -25,13 +25,15 @@ class UserService {
     @Autowired
     AuthUserRepoDw authUserRepoDw
 
-    void migrate() {
+    Map<Long, String> migrate() {
         List<AuthUser> sourceUsers = authUserRepo.findAll()
         List<AuthUserDw> destUsers = authUserRepoDw.findAll()
         Map<Long, AuthUserDw> destUserMap = [:]
         for (AuthUserDw user : destUsers) {
             destUserMap[user.authUserId] = user
         }
+
+        Map<Long, String> results = [:]
 
         for (AuthUser sourceUser : sourceUsers) {
             AuthUserDw destUser = destUserMap[sourceUser.authUserId]
@@ -47,7 +49,7 @@ class UserService {
             boolean different =  dest != source
 
             if (different) {
-                log.info("AuthUser ${destUser.authUserId} updated")
+                log.info("AuthUser ${sourceUser.authUserId} updated")
                 destUser.with {
                     authUserId = sourceUser.authUserId
                     email = sourceUser.email
@@ -59,6 +61,8 @@ class UserService {
 
                 authUserRepoDw.save(destUser)
             }
+
+            results
         }
     }
 

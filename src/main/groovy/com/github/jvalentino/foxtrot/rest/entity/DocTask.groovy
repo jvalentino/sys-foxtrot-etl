@@ -6,7 +6,6 @@ import javax.persistence.CascadeType
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.FetchType
-import javax.persistence.GeneratedValue
 import javax.persistence.Id
 import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
@@ -22,7 +21,7 @@ import java.sql.Timestamp
 @Table(name = 'doc_task')
 class DocTask {
 
-    @Id @GeneratedValue
+    @Id
     @Column(name = 'doc_task_id')
     Long docTaskId
 

@@ -3,6 +3,7 @@ package com.github.jvalentino.foxtrot.dw.config
 import com.zaxxer.hikari.HikariDataSource
 import groovy.transform.CompileDynamic
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder
@@ -33,6 +34,9 @@ import javax.sql.DataSource
         basePackages = ['com.github.jvalentino.foxtrot.dw.repo'])
 class PrimaryDataSourceConfiguration {
 
+    @Value('${hibernate.dialect-primary}')
+    String dialect
+
     @Primary
     @Bean(name = 'primaryDataSourceProperties')
     @ConfigurationProperties('spring.datasource-primary')
@@ -55,7 +59,7 @@ class PrimaryDataSourceConfiguration {
             @Qualifier('primaryDataSource') DataSource primaryDataSource) {
 
         Map<String, String> primaryJpaProperties = [:]
-        primaryJpaProperties.put('hibernate.dialect', 'org.hibernate.dialect.PostgreSQLDialect')
+        primaryJpaProperties.put('hibernate.dialect', dialect)
         primaryJpaProperties.put('hibernate.hbm2ddl.auto', 'update')
         primaryJpaProperties.put('spring.jpa.generate-ddl', true)
 
