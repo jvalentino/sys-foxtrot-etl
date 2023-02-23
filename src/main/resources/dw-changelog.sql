@@ -52,4 +52,18 @@ CREATE TABLE doc_task (
     FOREIGN KEY (created_by_user_id) REFERENCES auth_user (auth_user_id) ON UPDATE CASCADE
 );
 
+-- changeset liquibase:2
+
+CREATE TABLE batch_run (
+    batch_run_id SERIAL,
+    created_datetime TIMESTAMPTZ not null,
+    success boolean not null,
+    error_text TEXT,
+    PRIMARY KEY (batch_run_id)
+);
+
+-- changeset liquibase:3
+
+ALTER TABLE batch_run
+  ADD runtime_ms int;
 

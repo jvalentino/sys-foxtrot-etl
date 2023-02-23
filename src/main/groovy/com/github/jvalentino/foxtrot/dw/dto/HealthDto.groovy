@@ -1,5 +1,6 @@
 package com.github.jvalentino.foxtrot.dw.dto
 
+import com.github.jvalentino.foxtrot.dw.entity.BatchRun
 import groovy.transform.CompileDynamic
 
 /**
@@ -16,5 +17,7 @@ class HealthDto {
     Long destAuthUsers = 0L
     Long destDocs = 0L
     Long destDocVersions = 0L
+
+    List<BatchRun> runs = []
 
 }

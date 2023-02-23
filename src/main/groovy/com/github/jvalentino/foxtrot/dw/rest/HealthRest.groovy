@@ -2,6 +2,7 @@ package com.github.jvalentino.foxtrot.dw.rest
 
 import com.github.jvalentino.foxtrot.dw.dto.HealthDto
 import com.github.jvalentino.foxtrot.dw.repo.AuthUserRepoDw
+import com.github.jvalentino.foxtrot.dw.repo.BatchRunRepo
 import com.github.jvalentino.foxtrot.dw.repo.DocRepoDw
 import com.github.jvalentino.foxtrot.dw.repo.DocVersionRepoDw
 import com.github.jvalentino.foxtrot.rest.repo.AuthUserRepo
@@ -39,6 +40,9 @@ class HealthRest {
     @Autowired
     DocVersionRepoDw docVersionRepoDw
 
+    @Autowired
+    BatchRunRepo batchRunRepo
+
     @GetMapping('/')
     HealthDto health() {
         HealthDto result = new HealthDto()
@@ -49,6 +53,7 @@ class HealthRest {
             destAuthUsers = authUserRepoDw.count()
             destDocs = docRepoDw.count()
             destDocVersions = docVersionRepoDw.count()
+            runs = batchRunRepo.findAll()
         }
 
         result
