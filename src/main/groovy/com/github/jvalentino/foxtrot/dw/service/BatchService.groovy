@@ -22,11 +22,19 @@ class BatchService {
     @Autowired
     BatchRunRepo batchRunRepo
 
+    @Autowired
+    UserService userService
+
     @Scheduled(fixedRate = 60000L)
     void scheduled() {
         log.info('RUNNING ON SCHEDULE')
 
         Date startDate = DateGenerator.date()
+
+        // make sure we have all the users
+        userService.migrate()
+
+        // find doc that have not been updated in a year
 
         Date endDate = DateGenerator.date()
         BatchRun run = new BatchRun()
