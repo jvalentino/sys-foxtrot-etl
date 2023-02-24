@@ -50,7 +50,7 @@ class BatchService {
             success = true
             errorText = null
             runtimeMs = endDate.time - startDate.time
-            createdDateTime = new Timestamp(startDate.time)
+            createdDateTime = new Timestamp(endDate.time)
         }
         batchRunRepo.save(run)
     }

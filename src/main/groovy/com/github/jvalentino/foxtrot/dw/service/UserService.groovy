@@ -38,8 +38,10 @@ class UserService {
         for (AuthUser sourceUser : sourceUsers) {
             AuthUserDw destUser = destUserMap[sourceUser.authUserId]
 
+            boolean isNew = false
             if (destUser == null) {
                 destUser = new AuthUserDw()
+                isNew = true
             }
 
             // only save if there has been a change
@@ -49,7 +51,11 @@ class UserService {
             boolean different =  dest != source
 
             if (different) {
-                log.info("AuthUser ${sourceUser.authUserId} updated")
+                if (isNew) {
+                    results[sourceUser.authUserId] = 'new'
+                } else {
+                    results[sourceUser.authUserId] = 'updated'
+                }
                 destUser.with {
                     authUserId = sourceUser.authUserId
                     email = sourceUser.email
@@ -60,10 +66,14 @@ class UserService {
                 }
 
                 authUserRepoDw.save(destUser)
+            } else {
+                results[sourceUser.authUserId] = 'unchanged'
             }
 
-            results
+            log.info("AuthUser ${sourceUser.authUserId} ${results[sourceUser.authUserId]}")
         }
+
+        results
     }
 
 }

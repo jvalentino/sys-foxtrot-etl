@@ -20,7 +20,7 @@ class UserServiceIntgTest extends BaseIntg {
     AuthUserRepoDw authUserRepoDw
 
     def "test migrate"() {
-        given:
+        given: 'that a user has not changed'
         AuthUser unchangedSource = new AuthUser()
         unchangedSource.with {
             authUserId = 1L
@@ -43,12 +43,74 @@ class UserServiceIntgTest extends BaseIntg {
         }
         authUserRepoDw.save(unchangedDest)
 
+        and: 'that a user has had a change'
+        AuthUser changedSource = new AuthUser()
+        changedSource.with {
+            authUserId = 2L
+            email = 'f'
+            password = 'g'
+            salt = 'h'
+            firstName = 'i'
+            lastName = 'changed'
+        }
+        authUserRepo.save(changedSource)
 
+        AuthUserDw changedDest = new AuthUserDw()
+        changedDest.with {
+            authUserId = 2L
+            email = 'f'
+            password = 'g'
+            salt = 'h'
+            firstName = 'i'
+            lastName = 'j'
+        }
+        authUserRepoDw.save(changedDest)
+
+        and: 'a new user'
+        AuthUser newSource = new AuthUser()
+        newSource.with {
+            authUserId = 3L
+            email = 'k'
+            password = 'l'
+            salt = 'm'
+            firstName = 'n'
+            lastName = 'o'
+        }
+        authUserRepo.save(newSource)
 
         when:
-        userService.migrate()
+        Map<Long, String> results = userService.migrate()
 
         then:
-        true
+        results[1L] == 'unchanged'
+        results[2L] == 'updated'
+        results[3L] == 'new'
+
+        and:
+        AuthUserDw one = authUserRepoDw.findById(1L).get()
+        one.authUserId == 1L
+        one.email == 'a'
+        one.password == 'b'
+        one.salt == 'c'
+        one.firstName == 'd'
+        one.lastName == 'e'
+
+        and:
+        AuthUserDw two = authUserRepoDw.findById(2L).get()
+        two.authUserId == 2L
+        two.email == 'f'
+        two.password == 'g'
+        two.salt == 'h'
+        two.firstName == 'i'
+        two.lastName == 'changed'
+
+        and:
+        AuthUserDw three = authUserRepoDw.findById(3L).get()
+        three.authUserId == 3L
+        three.email == 'k'
+        three.password == 'l'
+        three.salt == 'm'
+        three.firstName == 'n'
+        three.lastName == 'o'
     }
 }
