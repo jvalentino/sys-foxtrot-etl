@@ -31,12 +31,20 @@ class DocDw {
     @Column(name = 'mime_type')
     String mimeType
 
-    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
-    @JoinColumn(name = 'created_by_user_id', referencedColumnName = 'auth_user_id')
-    AuthUserDw createdByUser
+    @Column(name = 'created_by_user_id', nullable=false)
+    Long createdByUserId
 
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
-    @JoinColumn(name = 'updated_by_user_id', referencedColumnName = 'auth_user_id')
+    @JoinColumn(name = 'created_by_user_id', referencedColumnName = 'auth_user_id',
+            updatable = false, insertable = false)
+    AuthUserDw createdByUser
+
+    @Column(name = 'updated_by_user_id', nullable=false)
+    Long updatedByUserId
+
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+    @JoinColumn(name = 'updated_by_user_id', referencedColumnName = 'auth_user_id',
+            updatable = false, insertable = false)
     AuthUserDw updatedByUser
 
     @Column(name = 'created_datetime')

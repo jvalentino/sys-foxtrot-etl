@@ -8,6 +8,8 @@ import com.github.jvalentino.foxtrot.rest.repo.AuthUserRepo
 import groovy.transform.CompileDynamic
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 
 /**
@@ -25,15 +27,39 @@ class UserService {
     @Autowired
     AuthUserRepoDw authUserRepoDw
 
-    Map<Long, String> migrate() {
-        List<AuthUser> sourceUsers = authUserRepo.findAll()
-        List<AuthUserDw> destUsers = authUserRepoDw.findAll()
+    Map<Long, String> migrate(int batchSize=1_000) {
+        Map<Long, String> results = [:]
+
+        boolean moreRecords = true
+        int start = 0
+        while (moreRecords) {
+            List<AuthUser> sourceUsers = authUserRepo.findAll(
+                    new PageRequest(start, batchSize, Sort.by('authUserId'))).toList()
+
+            List<Long> ids = []
+            for (AuthUser user : sourceUsers) {
+                ids.add(user.authUserId)
+            }
+
+            List<AuthUserDw> destUsers = authUserRepoDw.findAllById(ids)
+
+            if (sourceUsers.size() == 0) {
+                moreRecords = false
+                break
+            }
+
+            this.migrate(sourceUsers, destUsers, results)
+
+            start += batchSize
+        }
+        results
+    }
+
+    protected void migrate(List<AuthUser> sourceUsers, List<AuthUserDw> destUsers, Map<Long, String> results) {
         Map<Long, AuthUserDw> destUserMap = [:]
         for (AuthUserDw user : destUsers) {
             destUserMap[user.authUserId] = user
         }
-
-        Map<Long, String> results = [:]
 
         for (AuthUser sourceUser : sourceUsers) {
             AuthUserDw destUser = destUserMap[sourceUser.authUserId]
@@ -72,8 +98,6 @@ class UserService {
 
             log.info("AuthUser ${sourceUser.authUserId} ${results[sourceUser.authUserId]}")
         }
-
-        results
     }
 
 }

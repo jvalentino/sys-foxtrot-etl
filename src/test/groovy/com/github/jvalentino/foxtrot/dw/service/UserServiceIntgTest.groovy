@@ -79,7 +79,7 @@ class UserServiceIntgTest extends BaseIntg {
         authUserRepo.save(newSource)
 
         when:
-        Map<Long, String> results = userService.migrate()
+        Map<Long, String> results = userService.migrate(1)
 
         then:
         results[1L] == 'unchanged'
