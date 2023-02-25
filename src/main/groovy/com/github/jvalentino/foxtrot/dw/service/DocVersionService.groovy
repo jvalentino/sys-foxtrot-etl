@@ -54,6 +54,10 @@ class DocVersionService {
         results
     }
 
+    void delete(Date priorTo) {
+        docVersionRepo.deletePriorTo(priorTo)
+    }
+
     protected List<Long> getIds(List<DocVersion> sources) {
         List<Long> ids = []
 

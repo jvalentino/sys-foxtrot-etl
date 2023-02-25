@@ -35,4 +35,12 @@ class DateUtil {
         dateFormat.format(date)
     }
 
+    static Date addDays(Date date, int days) {
+        Calendar c = Calendar.instance
+        c.time = date
+        c.add(Calendar.DAY_OF_MONTH, days)
+
+        c.time
+    }
+
 }

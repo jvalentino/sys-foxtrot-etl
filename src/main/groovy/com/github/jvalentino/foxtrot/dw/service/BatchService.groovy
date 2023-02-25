@@ -3,6 +3,7 @@ package com.github.jvalentino.foxtrot.dw.service
 import com.github.jvalentino.foxtrot.dw.entity.BatchRun
 import com.github.jvalentino.foxtrot.dw.repo.BatchRunRepo
 import com.github.jvalentino.foxtrot.dw.util.DateGenerator
+import com.github.jvalentino.foxtrot.dw.util.DateUtil
 import groovy.transform.CompileDynamic
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
@@ -53,7 +54,13 @@ class BatchService {
         docService.migrate(lastRun)
         docVersionService.migrate(lastRun)
 
-        // find doc that have not been updated in a year
+        Date priorTo = DateUtil.addDays(startDate, -365)
+
+        // delete doc versions that have not been updated in a year
+        docVersionService.delete(priorTo)
+
+        // delete docs that have not been updated in a year
+        docService.deletePriorTo(priorTo)
 
         Date endDate = DateGenerator.date()
 

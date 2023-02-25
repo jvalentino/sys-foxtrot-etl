@@ -53,6 +53,10 @@ class DocService {
         results
     }
 
+    void deletePriorTo(Date date) {
+        docRepo.deletePriorTo(date)
+    }
+
     protected List<Long> getIds(List<Doc> sourceDocs) {
         List<Long> ids = []
 

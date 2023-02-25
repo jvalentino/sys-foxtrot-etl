@@ -4,7 +4,9 @@ import com.github.jvalentino.foxtrot.rest.entity.Doc
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
+import org.springframework.transaction.annotation.Transactional
 
 /**
  * Repository interface for the Doc entity
@@ -17,5 +19,13 @@ interface DocRepo extends JpaRepository<Doc, Long> {
         where d.updatedDateTime >= ?1
     ''')
     Page<Doc> findUpdatedAfter(Date date, Pageable pageable)
+
+    @Transactional
+    @Modifying
+    @Query('''
+        delete from Doc d
+        where d.updatedDateTime < ?1
+    ''')
+    void deletePriorTo(Date date)
 
 }
