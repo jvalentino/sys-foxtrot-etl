@@ -32,6 +32,9 @@ class BatchService {
     @Autowired
     DocService docService
 
+    @Autowired
+    DocVersionService docVersionService
+
     @Value('${scheduling.enabled}')
     boolean schedulingEnabled
 
@@ -48,6 +51,7 @@ class BatchService {
 
         userService.migrate()
         docService.migrate(lastRun)
+        docVersionService.migrate(lastRun)
 
         // find doc that have not been updated in a year
 

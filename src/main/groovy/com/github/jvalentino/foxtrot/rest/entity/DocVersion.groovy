@@ -30,8 +30,12 @@ class DocVersion {
     @Column(name = 'version_num')
     Long versionNum
 
+    @Column(name = 'doc_id', nullable=false)
+    Long docId
+
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
-    @JoinColumn(name = 'doc_id', referencedColumnName = 'doc_id')
+    @JoinColumn(name = 'doc_id', referencedColumnName = 'doc_id',
+            updatable = false, insertable = false)
     Doc doc
 
     // https://stackoverflow.com/questions/9114510/
@@ -44,8 +48,12 @@ class DocVersion {
     @Column(name = 'created_datetime')
     Timestamp createdDateTime
 
+    @Column(name = 'created_by_user_id', nullable=false)
+    Long createdByUserId
+
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
-    @JoinColumn(name = 'created_by_user_id', referencedColumnName = 'auth_user_id')
+    @JoinColumn(name = 'created_by_user_id', referencedColumnName = 'auth_user_id',
+            updatable = false, insertable = false)
     AuthUser createdByUser
 
     DocVersion() { }
